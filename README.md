@@ -15,7 +15,7 @@ getheader.c		Gets ANPA headers
 main.c			Starting point for program
 parsectl.c		Parse the control file
 printbody.c		Print the body of the article
-printheader.c		Pritn the header of the article
+printheader.c		Print the header of the article
 rc.local.sample		Sample start up line for BSD's rc.local
 readf.c			Read a char in
 readrec.c		Read a line in.
