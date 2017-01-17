@@ -1,4 +1,4 @@
-ANPA is a utility takes a wire service feed that conforms to the ANPA-RI (American Newspaper Publishers Association*) Bulletin 1312 specification from a tty or file and outputs a RFC-822 (mail.local or rmail) compliment file that can be injected into some data stream like USENET or Internet mail.
+ANPA is a utility takes a wire service feed that conforms to the ANPA-RI (American Newspaper Publishers Association*) [Bulletin 1312](https://en.wikipedia.org/wiki/ANPA-1312) specification from a tty or file and outputs a RFC-822 (mail.local or rmail) compliment file that can be injected into some data stream like USENET or Internet mail.
 
 Files include:
 
