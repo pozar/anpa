@@ -1,0 +1,67 @@
+.Dd May 17 1994
+.Dt ANPA.CTL 5
+.Sh NAME
+.Nm anpa.ctl
+.Nd anpa.ctl control file for the anpa utility.
+.Sh DESCRIPTION
+The
+.Nm anpa.ctl
+control file defines what news to be filtered through the "selector"
+function and what action should occur.
+
+The file follows the "token value" convention. A token will start
+the line and one or more data fields will follow.  A ``#'' at the
+beggining of a line indicates a comment. The rest of the line is
+not parsed for information.
+
+The first part of the file defines things like station ID and the
+default action if the ANPA article header does not match any of
+the tables.
+
+The next section contains the tables. Each table contains the values
+and action if the anpa article header matches. The table will start
+with the "token"
+.Nm TABLE
+followed by a letter, and end with the token
+.Nm ENDTABLE
+. There can be up to 26 tables [A-Z].
+.Pp
+The following are the "tokens" for each table.
+
+.Nm TABLE <LETTER>
+
+This is the start of the table. Each table has it's own letter
+associated with it. Letters are from A-Z and can be upper or lower
+case. An upper case letter is the same as a lower case letter.
+
+.Nm ENDTABLE
+
+This defines the end of the table.
+
+.Nm START <TIME>
+
+This defines the start time when this table is in effect.  Times
+are in "24 hour" time and are four digits long with the hour in
+the left two digits and the minute in the right. (ie. "0530").
+
+.Nm STOP <TIME>
+
+This defines the stop time when this table is in effect.
+
+.Nm SLD <LETTER>
+
+SEL     0ca-p 0ca-n 0ca-k
+
+CAT     pfnimsgv
+
+ACTION  /bin/cat %s >> /usr/local/etc/gopher/AP/AP
+
+.Sh FILES
+.Bl -tag -width anpa.ctl -compact
+.It Pa anpa.ctl
+The
+.Nm anpa.ctl
+file normally resides in same directory as the anpa program.
+.El
+.Sh SEE ALSO
+.Xr anpa 1

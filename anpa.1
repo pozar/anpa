@@ -1,0 +1,59 @@
+.Dd September 3 1999
+.Dt ANPA 1
+.Os
+.Sh ANPA
+.Nm anpa
+.Nd ANPA wire feed parser.
+.Sh SYNOPSIS
+.Nm anpa
+.Op options
+.Sh DESCRIPTION
+The
+.Nm anpa
+utility takes a wire service feed that conforms to the ANPA-RI
+specification from a tty or file and outputs a RFC-822 (mail.local or rmail) 
+compliment file that can be injected into some data stream like USENET or 
+Internet mail.
+.Pp
+The following options are available:
+.Bl -tag -width flag
+.It Fl i 
+.Op DEVICE | INPUTFILE
+What ANPA data stream to take the feed from. DEVICE is the full path name
+(i.e., /dev/tty00). INPUTFILE is a filename.
+.It - 
+The ANPA data stream will be re-directed from STDIN.
+.It Fl b 
+enables 
+.Nm anpa 
+to read the Bay City News ANPA headers correctly.
+.It Fl c 
+.Op CONTROLFILE
+The control file (default: CONTROLFILE == anpa.ctl).
+.It Fl x 
+.Op DEBUG-LEVEL
+The debugging level to run the program at. DEBUG-LEVEL can be: 0 = off 
+(default); 8 = shows the control file parsing; 9 = verbose.
+.It Fl p
+.Op PIDFILE
+Creates a file with the PID number appended to it. Default: anpa.pid.XXXX
+.El
+.Pp
+The
+.Nm anpa
+utility exits 0 on success, and >0 if an error occurs.
+.Sh SEE ALSO
+.Xr anpa.ctl 5
+.Sh STANDARDS
+The
+.Nm anpa
+utility conforms to the ANPA-RI updated guidelines for high-speed
+wire service transmission. This is an enhancement to the original
+high-speed guidelines as outlined in the R.I. Bulletin 1228 (June
+1, 1976). It seems that each wire service has interpreted the ANPA
+standard differently. Services like Associated Press and Bay City
+News differ slightly from the standard.  In the default mode the
+.Nm anpa
+utility will interpret AP properly.  Other services like Bay City
+news will have command like arguments that are need to be defined
+so the utility can parse the header correctly for the service.

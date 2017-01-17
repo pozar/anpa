@@ -1,0 +1,196 @@
+#!/usr/local/bin/perl
+
+##################################################################################
+# 
+# Parses a mail.local file, indexes and displays it on a web page.
+# Copyright 1998-1999 Timothy Pozar
+# 
+##################################################################################
+
+use CGI;
+
+$cgi = new CGI;
+
+$searchsubstr = $cgi->param('searchsubstr');
+$searchartstr = $cgi->param('searchartstr');
+if(length($searchsubstr) > 0){
+	$searchsub = 1;
+} else {
+	$searchsub = 0;
+}
+if(length($searchartstr) > 0){
+	$searchart = 1;
+} else {
+	$searchart = 0;
+}
+$argnum = 0;
+
+# Parse the arguments...
+$_ = $ARGV[$argnum];
+while(m/^-/){
+	$arg = substr($_,1);
+	if($arg == "s"){
+		$searchsub = 1;
+		$argnum++;
+		$searchsubstr = $ARGV[$argnum];
+	}
+	$argnum++;
+	$_ = $ARGV[$argnum];
+}
+
+if($ARGV[$argnum] eq ""){
+	$mailspool = "/usr/local/etc/gopher/ap/ap";
+}else{
+	$mailspool = $ARGV[$argnum];
+}
+
+# $prognam = "/cgi-bin/test.new";
+$prognam = substr($0,index($0,"/cgi-bin/"));
+$dirstay = "/usr/local/etc/gopher";
+$index = 0;
+$msgnum = 0;
+$inheader = 0;
+
+print "Content-type: text/html\n\n";
+print "<HTML>\n";
+
+$_ = $mailspool;
+
+if((m/^$dirstay/ == '') && (m/|/ == '')){
+	print "<HEAD><TITLE>ERROR</TITLE></HEAD>\n";
+	print "<BODY BGCOLOR=\"FFFFFF\">\n";
+	print "<font color=red>\n";
+	print "<center>\n";
+	print "<H1>ERROR: Must stay in directory \"$dirstay\"</H1>\n";
+	print "</BODY>\n";
+	print "</HTML>\n";
+	exit(1);
+}
+if(open(MAILSPOOL,$mailspool) == 0){
+	print "<HEAD><TITLE>ERROR</TITLE></HEAD>\n";
+	print "<BODY BGCOLOR=\"FFFFFF\">\n";
+	print "<font color=red>\n";
+	print "<center>\n";
+	print "<H1>ERROR: Can not open file \"$mailspool\"</H1>\n";
+	print "</BODY>\n";
+	print "</HTML>\n";
+	exit(1);
+}
+
+print "<HEAD><META HTTP-EQUIV=\"REFRESH\" CONTENT=600><TITLE>$mailspool</TITLE></HEAD>\n";
+print "<BODY BGCOLOR=\"FFFFFF\">\n";
+
+$argnum++;
+if($ARGV[$argnum] eq ""){	# Index mail.local file...
+	indexmailfile();
+} else {
+	$pos = $ARGV[$argnum];
+	displayarticle($pos);	# Display the article...
+}
+
+print "</BODY>\n";
+print "</HTML>\n";
+
+sub indexmailfile {		# Index mail.local file...
+	print "<H1>Index of $mailspool</H1>\n";
+	print "<font face=\"Courier, Arial, Helvetica\">\n";
+	print "<form method=post action=\"/cgi-bin/test\">\n";
+	print "Subject line search string: <input type=text name=searchsubstr>\n";
+	print "<input type=submit value=\"Find It!\">\n";
+	print "</form>\n";
+	print "<hr>\n";
+	print "<UL>\n";
+	while(<MAILSPOOL>){
+		if(m/ ^From \s        # this regex is for the mail.local "^From " line
+		   [-\w]+(\@[-\w]+(\.[-\w]+)*)?       \s+  # an email address
+		   (Sun|Mon|Tue|Wed|Thu|Fri|Sat)      \s+  # days of the week, duh!
+		   (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \s+ # months
+		   \d\d?                              \s+  # day of month
+		   \d\d:\d\d:\d\d                     \s+  # hh:mm:ss
+		   \d\d\d\d                           \s*$ # the year
+		   /x){
+			$msgend[$msgnum] = $index;
+			$msgnum++;
+			$msgstart[$msgnum] = $index;
+			$inheader = 1;
+			$subhit = 0;			# For some reason AP has two Subject lines.
+		}
+		if((m/^Subject: /)&&($inheader == 1)&&($subhit == 0)){
+			$subhit = 1;			# For some reason AP has two Subject lines.
+			$foo = $_;
+			chop($foo);
+			$subject = substr($foo,9);
+			if ($subject eq ""){
+				$subject = "[NO SUBJECT SUPPLIED]";
+			}
+			$temp = $_;
+			$_ = $subject;
+			s/AP-CAN--Htemps/<font color=green><b>AP-CAN--Htemps<\/b><\/font>/g;
+			s/AP-CA--SFO-Northern and Central Ca State Weather Roundup/<font color=green><b>AP-CA--SFO-Northern and Central Ca State Weather Roundup<\/b><\/font>/g;
+			s/AP-CA--SFO-State and Extended Forecast for Northern and Central California/<font color=green><b>AP-CA--SFO-State and Extended Forecast for Northern and Central California<\/b><\/font>/g;
+			s/URGENT/<font color=red><blink><b>URGENT<\/b><\/blink><\/font>/g;
+			# The following will pink out sports slugs that have a string like "AP-NFL: Falcons/Giants".
+			# These stories will have final scores in them. (Pink is nice for sports...)
+			if(m/AP-[A-Za-z]+: .*\//x){
+				$_ = "<font color=\"ff00ff\">". $_ . "</font>";
+			}
+			if(m/ Prep-/){
+				$_ = "<font color=orange>". $_ . "</font>";
+			}
+			if(m/.*-Obit-/){
+				$_ = "<font color=black>". $_ . "</font>";
+			}
+			$subject = $_;
+			$_ = $temp;
+			if($searchsub == 1){
+				$temp = $_;
+				$_ = $subject;
+				if(m/$searchsubstr/ix){
+					print("<LI><a href=\"$prognam?$mailspool+$msgstart[$msgnum]\">$subject</a><br>\n");
+				}
+				$_ = $temp;
+			} else {
+				print("<LI><a href=\"$prognam?$mailspool+$msgstart[$msgnum]\">$subject</a><br>\n");
+			}
+		}
+		if((m/^\n/)&&($inheader == 1)){
+			$inheader = 0;
+		}
+		$index = length($_) + $index;
+	}
+	print("</UL>\n");
+}
+
+sub displayarticle {		# Display the article...
+	my $position = shift;
+	print "<H1>Article</H1>\n";
+	print "<pre><FONT SIZE=1 COLOR=\"#3399CC\">";
+	seek(MAILSPOOL,$position,0);
+	$inheader = 1;
+	while(<MAILSPOOL>){
+		if((m/ ^From \s        # this regex is for the mail.local "^From " line
+			[-\w]+(\@[-\w]+(\.[-\w]+)*)?       \s+  # an email address
+			(Sun|Mon|Tue|Wed|Thu|Fri|Sat)      \s+  # days of the week, duh!
+			(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \s+ # months
+			\d\d?                              \s+  # day of month
+			\d\d:\d\d:\d\d                     \s+  # hh:mm:ss
+			\d\d\d\d                           \s*$ # the year
+			/x) && ($inheader == 0)){
+				last;
+		}
+		if((m/^\n/)&&($inheader == 1)){
+			$inheader = 0;
+			print "</font>";
+		}
+		# Take out...
+		s///g;	# control-^
+		s///g;	# control-_
+		s///g;	# control-L
+		s/^<//g;	# lines that start with "<"
+		s/<$//g;	# lines that end with "<"
+		s/^\^//g;	# lines that start with "^"
+
+		print $_;	# Print it
+	} 
+	print "</pre>\n";
+}
