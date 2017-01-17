@@ -3,7 +3,7 @@
  *
  * Determins what to do with this article.
  *
- * Copywrite 1994 Timothy Pozar
+ * Copyright 1994 Timothy Pozar
  *
  */
 

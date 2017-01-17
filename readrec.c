@@ -3,7 +3,7 @@
  *
  * read a line of text in to a buffer
  *
- * Copywrite 1994 Timothy Pozar
+ * Copyright 1994 Timothy Pozar
  *
  */
 

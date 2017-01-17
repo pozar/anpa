@@ -3,7 +3,7 @@
  *
  * Parses the anpa ctl file and fills up the tables.
  *
- * Copywrite 1994 Timothy Pozar
+ * Copyright 1994 Timothy Pozar
  *
  */
 

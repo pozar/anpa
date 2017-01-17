@@ -9,7 +9,7 @@
  * from a tty. I need to stick some sort of buffering in here to suck in
  * as much as possible.
  *
- * Copywright 1994 Timothy Pozar
+ * Copyright 1994 Timothy Pozar
  *
  */
 

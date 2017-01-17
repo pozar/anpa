@@ -3,7 +3,7 @@
  *
  * Preform any action that is needed with this article
  *
- * Copywright 1994 Timothy Pozar
+ * Copyright 1994 Timothy Pozar
  *
  */
 

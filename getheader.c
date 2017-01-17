@@ -5,7 +5,7 @@
  * on in another function compare against the tables and see what we need
  * to do with the story.
  *
- * Copywrite 1994 Timothy Pozar
+ * Copyright 1994 Timothy Pozar
  *
  */
 

@@ -5,7 +5,7 @@
  * RFC-822ish. We need to have a "From <address>", and a "Subject: <>"
  * line in here for gopher and WAIS indexing.
  *
- * Copywrite 1994 Timothy Pozar
+ * Copyright 1994 Timothy Pozar
  *
  */
 

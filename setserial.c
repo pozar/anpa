@@ -5,7 +5,7 @@
  * Set the line attributes to the serial port we are reading the wire
  * from. Should be called after we opened the input file.
  *
- * Copywrite 1994 Timothy Pozar
+ * Copyright 1994 Timothy Pozar
  *
  */
 
